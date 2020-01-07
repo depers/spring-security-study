@@ -11,9 +11,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * @Author 冯晓
@@ -39,11 +50,12 @@ public class UserControllerTest {
     public void whenQuerySuccess() throws Exception {
         String result = mockMvc.perform(MockMvcRequestBuilders.get("/user")
             // 期望接收的参数是json格式
-            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .param("username", "fengxiao"))
             // 期望得到的响应状态码为200
-            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(status().isOk())
             // 期望响应数据集合的长度是3
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
+            .andExpect(jsonPath("$.length()").value(3))
             .andReturn().getResponse().getContentAsString();
 
         System.out.println(result);
@@ -53,8 +65,8 @@ public class UserControllerTest {
     public void whenGetUserInfoSuccess() throws Exception {
         String result = mockMvc.perform(MockMvcRequestBuilders.get("/user/1")
             .contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("tom"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.username").value("tom"))
             .andReturn().getResponse().getContentAsString();
 
         System.out.println(result);
@@ -64,10 +76,48 @@ public class UserControllerTest {
     public void whenGetUserInfoFail() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/user/a")
             .contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+            .andExpect(status().is4xxClientError());
     }
 
 
+    @Test
+    public void whenCreateSuccess() throws Exception {
+        Date date = new Date();
+        System.out.println(date.getTime());
+        String content = "{\"username\":\"tom\", \"password\": \"12\", \"birthday\": "+ date.getTime() +"}";
+        String result = mockMvc.perform(MockMvcRequestBuilders.post("/user")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content(content)
+            .param("username", "xiao"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value("1"))
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn().getResponse().getContentAsString();
+        System.out.println(result);
+    }
+
+
+    @Test
+    public void whenUpdateSuccess() throws Exception {
+
+        Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        System.out.println(date.getTime());
+        String content = "{\"id\":\"1\", \"username\":\"tom\",\"password\":null,\"birthday\":"+date.getTime()+"}";
+        String reuslt = mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andReturn().getResponse().getContentAsString();
+
+        System.out.println(reuslt);
+    }
+
+    @Test
+    public void whenDeleteSuccess() throws Exception {
+        mockMvc.perform(delete("/user/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    }
 }
 
 

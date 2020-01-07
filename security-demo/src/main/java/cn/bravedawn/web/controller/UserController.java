@@ -6,11 +6,11 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -43,5 +43,49 @@ public class UserController {
         return user;
     }
 
+    @PostMapping
+    @JsonView(User.UserSimpleView.class)
+    public User create(@RequestParam String username, @Valid @RequestBody User user, BindingResult result){
+
+        if (result.hasErrors()){
+            result.getAllErrors().stream().forEach(error -> System.out.println(error.getDefaultMessage()));
+        }
+
+        System.out.println("--------------------------------------");
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getAge());
+
+        System.out.println("-------------username----"+ username);
+
+        user.setId("1");
+        return user;
+    }
+
+    @PutMapping("/{id:\\d+}")
+    public User update(@Valid @RequestBody User user, BindingResult result) {
+
+        if (result.hasErrors()){
+            result.getAllErrors().stream().forEach(error -> {
+                FieldError fieldError = (FieldError) error;
+                String message = fieldError.getField() + " : " +fieldError.getDefaultMessage();
+                System.out.println(message);
+            });
+        }
+        System.out.println("-----------------------------------");
+        System.out.println(user.getId());
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getBirthday());
+        System.out.println("-----------------------------------");
+
+        user.setId("1");
+        return user;
+    }
+
+    @DeleteMapping("/{id:\\d+}")
+    public void delete(@PathVariable String id) {
+        System.out.println(id);
+    }
 
 }
