@@ -40,6 +40,7 @@ public class UserController {
     public User getUserInfo(@PathVariable String id){
         User user = new User();
         user.setUsername("tom");
+        // int a = 1/0;
         return user;
     }
 
