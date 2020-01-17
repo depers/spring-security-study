@@ -14,12 +14,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
  */
 public class MockServer {
 
-    public static void main(String[] args) throws IOException {
+   /* public static void main(String[] args) throws IOException {
         configureFor(8062);
         removeAllMappings();
 
         mock("/order/1", "01");
-    }
+    }*/
 
     private static void mock(String url, String file) throws IOException {
         ClassPathResource resource = new ClassPathResource("mock/response/" + file + ".txt");
