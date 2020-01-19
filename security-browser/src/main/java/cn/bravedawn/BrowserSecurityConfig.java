@@ -1,5 +1,7 @@
 package cn.bravedawn;
 
+import cn.bravedawn.authentication.CustomAuthenticationFailureHandler;
+import cn.bravedawn.authentication.CustomAuthenticationSuccessHandler;
 import cn.bravedawn.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityProperties securityProperties;
+
+    @Autowired
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
 
     /**
@@ -39,10 +47,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/authentication")
                 // 配置登录逻辑的处理url
                 .loginProcessingUrl("/authentication/form")
+                // 配置身份校验成功处理类
+                .successHandler(customAuthenticationSuccessHandler)
+                // 配置身份校验失败处理类
+                .failureHandler(customAuthenticationFailureHandler)
                 .and()
                 // 对请求进行授权配置
                 .authorizeRequests()
-                // 若请求的url为/signIn.html，放开请求，无需身份认证
+                // 放开请求，无需身份认证
                 .antMatchers(
                         "/authentication",
                         securityProperties.getBrowser().getLoginPage()
