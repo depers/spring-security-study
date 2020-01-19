@@ -1,4 +1,4 @@
-package cn.bravedawn.browser;
+package cn.bravedawn;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
