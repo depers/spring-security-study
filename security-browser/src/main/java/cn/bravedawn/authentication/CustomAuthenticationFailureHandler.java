@@ -2,6 +2,7 @@ package cn.bravedawn.authentication;
 
 import cn.bravedawn.properties.LoginResponseType;
 import cn.bravedawn.properties.SecurityProperties;
+import cn.bravedawn.support.SimpleResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class CustomAuthenticationFailureHandler
         if(LoginResponseType.JSON.equals(securityProperties.getBrowser().getLoginResponseType())){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            response.getWriter().write(objectMapper.writeValueAsString(e));
+            response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(e.getMessage())));
         }else{
             // 否则走spring security自己实现的逻辑
             super.onAuthenticationFailure(request, response, e);

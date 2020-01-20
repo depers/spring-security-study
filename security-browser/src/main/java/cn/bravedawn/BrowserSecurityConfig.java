@@ -3,6 +3,7 @@ package cn.bravedawn;
 import cn.bravedawn.authentication.CustomAuthenticationFailureHandler;
 import cn.bravedawn.authentication.CustomAuthenticationSuccessHandler;
 import cn.bravedawn.properties.SecurityProperties;
+import cn.bravedawn.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @Author 冯晓
@@ -41,7 +43,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.formLogin()
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+        validateCodeFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
+
+
+        http
+                // 在UsernamePasswordAuthenticationFilter之前校验图形验证码
+                .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
         //http.httpBasic()
                 // 配置身份校验路由
                 .loginPage("/authentication")
@@ -57,7 +66,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 放开请求，无需身份认证
                 .antMatchers(
                         "/authentication",
-                        securityProperties.getBrowser().getLoginPage()
+                        securityProperties.getBrowser().getLoginPage(),
+                        "/code/image"
                     ).permitAll()
                 // 对所有请求
                 .anyRequest()
