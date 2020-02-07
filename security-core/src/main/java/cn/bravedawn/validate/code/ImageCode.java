@@ -2,6 +2,7 @@ package cn.bravedawn.validate.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.time.format.DateTimeFormatter;
  */
 @Data
 @AllArgsConstructor
+@Slf4j
 public class ImageCode {
 
     private BufferedImage image;
@@ -40,7 +42,7 @@ public class ImageCode {
      * @return
      */
     public boolean isExpired() {
-        System.out.println("-------------expireTime: "+ expireTime.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        log.debug("-------------expireTime: "+ expireTime.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         return LocalDateTime.now().isAfter(expireTime);
     }
 }
