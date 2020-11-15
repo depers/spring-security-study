@@ -62,11 +62,14 @@ public class ValidateCodeFilter extends OncePerRequestFilter
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
-        String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(
-                securityProperties.getCode().getImage().getUrl(), ",");
-        for (String url : configUrls) {
-            urls.add(url);
+        if (StringUtils.isNotBlank(securityProperties.getCode().getImage().getUrl())){
+            String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(
+                    securityProperties.getCode().getImage().getUrl(), ",");
+            for (String url : configUrls) {
+                urls.add(url);
+            }
         }
+
         urls.add("/authentication/form");
     }
 

@@ -1,6 +1,7 @@
 package cn.bravedawn.config;
 
 import cn.bravedawn.filter.TimeFilter;
+import cn.bravedawn.filter.TimeFilterTwo;
 import cn.bravedawn.interceptor.TimeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -54,6 +55,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
         TimeFilter timeFilter = new TimeFilter();
         registrationBean.setFilter(timeFilter);
+        registrationBean.setOrder(1);
+
+        // 设置请求非拦截的路径，该处设置为所有请求路径
+        List<String> urls = new ArrayList<>();
+        urls.add("/*");
+        registrationBean.setUrlPatterns(urls);
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean timeFilterTwo() {
+
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+
+        TimeFilterTwo timeFilter = new TimeFilterTwo();
+        registrationBean.setFilter(timeFilter);
+        registrationBean.setOrder(2);
 
         // 设置请求非拦截的路径，该处设置为所有请求路径
         List<String> urls = new ArrayList<>();

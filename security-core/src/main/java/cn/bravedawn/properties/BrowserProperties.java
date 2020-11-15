@@ -10,7 +10,19 @@ import lombok.Data;
 @Data
 public class BrowserProperties {
 
+    /**
+     * 登录的页面
+     */
     private String loginPage = "/signIn.html";
 
+    /**
+     * 登录后的响应类型
+     */
     private LoginResponseType loginResponseType = LoginResponseType.JSON;
+
+    /**
+     * 记住我功能cookie保存的秒数
+     */
+    private int rememberMeSeconds = 3600;
+
 }

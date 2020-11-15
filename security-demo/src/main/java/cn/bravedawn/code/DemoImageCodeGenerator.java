@@ -10,6 +10,9 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @Author 冯晓
  * @Date 2020/2/7 22:58
  */
+/* 此处配置的imageCodeGenerator会取代security-core中的
+*  cn.bravedawn.validate.code.ValidateCodeBeanConfig配置的imageCodeGenerator
+**/
 //@Component("imageCodeGenerator")
 @Slf4j
 public class DemoImageCodeGenerator implements ValidateCodeGenerator {

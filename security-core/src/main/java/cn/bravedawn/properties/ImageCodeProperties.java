@@ -17,6 +17,6 @@ public class ImageCodeProperties {
     private int length = 4;
     // 失效的时间
     private int expireIn = 60;
-    // 需要验证码连接的请求
+    // 需要验证码验证的请求
     private String url;
 }
